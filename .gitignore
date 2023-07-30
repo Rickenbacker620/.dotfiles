@@ -1,0 +1,4 @@
+fish/fish_variables
+*.pyc
+.vim/
+.tmux/
