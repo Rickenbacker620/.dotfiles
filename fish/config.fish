@@ -6,5 +6,4 @@ end
 
 if type -q pyenv
     pyenv init - | source
-    status --is-interactive; and pyenv virtualenv-init - | source
 end
