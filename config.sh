@@ -83,6 +83,8 @@ function setup_tmux() {
 function setup_ranger() {
     info "Setting up ranger"
 
+    git clone https://github.com/cdump/ranger-devicons2 $PWD/ranger/plugins/devicons2
+
     mklink ranger .config/ranger
 }
 

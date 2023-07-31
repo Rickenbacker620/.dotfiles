@@ -2,3 +2,4 @@ fish/fish_variables
 *.pyc
 .vim/
 .tmux/
+ranger/plugins
