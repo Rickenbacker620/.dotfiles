@@ -11,7 +11,7 @@ if [ "$PM" = "pacman" ]; then
     DEV_PKG="base-devel"
     OPENSSH_PKG="openssh"
     PYENV_BUILD_PKG="base-devel openssl zlib xz tk"
-    LANG_PKGS="pyenv go clang dotnet-sdk nodejs jdk8-openjdk"
+    LANG_PKGS="go clang dotnet-sdk nodejs jdk8-openjdk"
 elif [ "$PM" = "apt" ]; then
     PM_INSTALL="sudo apt-get install -y"
     DEV_PKG="build-essential"
@@ -87,6 +87,9 @@ function setup_ranger() {
 }
 
 function setup_base() {
+
+    mkdir -p ~/.config
+
     setup_fish
     setup_git
     setup_vim
