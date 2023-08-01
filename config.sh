@@ -108,7 +108,7 @@ function setup_languages() {
 
     # pyenv
     fish -c "set -Ux PYENV_ROOT $HOME/.pyenv"
-    fish -c "fish_add_path $PYENV_ROOT/bin"
+    fish -c "fish_add_path $HOME/.pyenv/bin"
 }
 
 PS3="Please select a configuration (enter the number): "
