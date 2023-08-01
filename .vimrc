@@ -57,7 +57,7 @@ set tabstop=4
 set softtabstop=4
 set termguicolors
 set list
-set listchars=tab:→\ ,space:·
+set listchars=tab:→\ ,
 set wrap
 set tw=0
 set noshowmode

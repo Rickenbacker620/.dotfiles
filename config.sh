@@ -13,7 +13,7 @@ if [ "$PM" = "pacman" ]; then
     PYENV_BUILD_PKG="base-devel openssl zlib xz tk"
     LANG_PKGS="go clang dotnet-sdk nodejs jdk8-openjdk"
 elif [ "$PM" = "apt" ]; then
-    PM_INSTALL="sudo apt-get install -y"
+    PM_INSTALL="sudo apt update && apt-get install -y"
     DEV_PKG="build-essential"
     OPENSSH_PKG="openssh-server"
     PYENV_BUILD_PKG="build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
@@ -62,8 +62,8 @@ function setup_git() {
 function setup_vim() {
     info "Setting up vim"
 
-	git clone https://github.com/dracula/vim.git $PWD/.vim/pack/themes/start/dracula
-	git clone https://github.com/itchyny/lightline.vim.git $PWD/.vim/pack/themes/start/lightline
+    git clone https://github.com/dracula/vim.git $PWD/.vim/pack/themes/start/dracula
+    git clone https://github.com/itchyny/lightline.vim.git $PWD/.vim/pack/themes/start/lightline
 
     mklink .vim .vim
     mklink .vimrc .vimrc
