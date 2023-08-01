@@ -63,7 +63,7 @@ function setup_vim() {
     git clone https://github.com/dracula/vim.git $PWD/.vim/pack/themes/start/dracula
     git clone https://github.com/itchyny/lightline.vim.git $PWD/.vim/pack/themes/start/lightline
 
-    mkdir ~/.cache/vim/undo
+    mkdir -p ~/.cache/vim/undo
     mklink .vim .vim
     mklink .vimrc .vimrc
     fish -c "set -U EDITOR vim"
