@@ -1,25 +1,23 @@
 #!/bin/bash
 
-if [ -z "$PM" ]; then
-    PM="pacman"
-fi
-
-echo "Using package manager: $PM"
-
-if [ "$PM" = "pacman" ]; then
-    PM_INSTALL="sudo pacman -Sy --noconfirm --needed"
+if command -v pacman > /dev/null; then
+    sudo pacman -Syy
+    PM_INSTALL="sudo pacman -S --noconfirm --needed"
     DEV_PKG="base-devel"
     OPENSSH_PKG="openssh"
     PYENV_BUILD_PKG="base-devel openssl zlib xz tk"
     LANG_PKGS="go clang dotnet-sdk nodejs jdk8-openjdk"
-elif [ "$PM" = "apt" ]; then
-    PM_INSTALL="sudo apt update && apt-get install -y"
+
+elif command -v apt > /dev/null; then
+    sudo apt update
+    PM_INSTALL="sudo apt install -y"
     DEV_PKG="build-essential"
     OPENSSH_PKG="openssh-server"
     PYENV_BUILD_PKG="build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
     LANG_PKGS="golang clang dotnet-sdk-7.0 nodejs openjdk-8-jdk"
+
 else
-    echo "Unsupported package manager: $PM"
+    echo "Unsupported package manager"
     exit 1
 fi
 
