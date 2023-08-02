@@ -9,8 +9,8 @@ if command -v pacman > /dev/null; then
     LANG_PKGS="go clang dotnet-sdk nodejs jdk8-openjdk"
 
 elif command -v apt > /dev/null; then
-    sudo apt update
-    PM_INSTALL="sudo apt install -y"
+    sudo apt-get update
+    PM_INSTALL="sudo apt-get install -y"
     DEV_PKG="build-essential"
     OPENSSH_PKG="openssh-server"
     PYENV_BUILD_PKG="build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
