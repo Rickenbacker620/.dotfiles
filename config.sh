@@ -57,6 +57,19 @@ function setup_git() {
     git config --global user.name "Rickenbacker620"
 }
 
+function setup_ssh() {
+    info "Setting up ssh"
+
+    if [ ! -d ~/.ssh ]; then
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+    fi
+
+    read -p "Please Enter PubKey: "
+
+    echo $REPLY >> ~/.ssh/authorized_keys
+}
+
 function setup_vim() {
     info "Setting up vim"
 
@@ -87,12 +100,19 @@ function setup_ranger() {
     mklink ranger .config/ranger
 }
 
+function setup_ssh() {
+    info "Setting up ranger"
+
+
+}
+
 function setup_base() {
 
     mkdir -p ~/.config
 
     setup_fish
     setup_git
+    setup_ssh
     setup_vim
     setup_tmux
     setup_ranger
