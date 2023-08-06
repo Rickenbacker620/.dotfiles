@@ -100,12 +100,6 @@ function setup_ranger() {
     mklink ranger .config/ranger
 }
 
-function setup_ssh() {
-    info "Setting up ranger"
-
-
-}
-
 function setup_base() {
 
     mkdir -p ~/.config
