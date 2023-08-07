@@ -14,7 +14,7 @@ elif command -v apt > /dev/null; then
     DEV_PKG="build-essential"
     OPENSSH_PKG="openssh-server"
     PYENV_BUILD_PKG="build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
-    LANG_PKGS="golang clang dotnet-sdk-7.0 nodejs openjdk-8-jdk"
+    LANG_PKGS="golang clang nodejs default-jdk"
 
 else
     echo "Unsupported package manager"
@@ -103,6 +103,8 @@ function setup_ranger() {
 function setup_base() {
 
     mkdir -p ~/.config
+
+    mklink .Xresources .Xresources
 
     setup_fish
     setup_git
