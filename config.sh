@@ -79,7 +79,7 @@ function setup_vim() {
     mkdir -p ~/.cache/vim/undo
     mklink .vim .vim
     mklink .vimrc .vimrc
-    fish -c "set -U EDITOR vim"
+    fish -c "set -Ux EDITOR vim"
 }
 
 function setup_tmux() {
