@@ -1,30 +1,34 @@
 #!/bin/bash
 
-if command -v pacman > /dev/null; then
+if [ -e /etc/os-release ]; then
+    . /etc/os-release
+    LINUX_DIST=$ID
+else
+    echo "/etc/os-release file not found."
+fi
+
+if [$LINUX_DIST == arch]; then
     sudo pacman -Syy
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
-    DEV_PKG="base-devel"
+    DEV_PKG="base-devel qemu-full"
     OPENSSH_PKG="openssh"
-    PYENV_BUILD_PKG="base-devel openssl zlib xz tk"
-    LANG_PKGS="go clang dotnet-sdk nodejs jdk8-openjdk"
+    PYENV_BUILD_PKG="openssl zlib xz tk"
+    LANG_PKGS="cmake gdb go clang dotnet-sdk nodejs jdk8-openjdk"
+    DESKTOP_PKG="bspwm rofi polybar mpv sxhkd xorg-server noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
 
-elif command -v apt > /dev/null; then
+elif [$LINUX_DIST == debian]; then
     sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
-    DEV_PKG="build-essential"
+    DEV_PKG="build-essential qemu-system"
     OPENSSH_PKG="openssh-server"
-    PYENV_BUILD_PKG="build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
-    LANG_PKGS="golang clang nodejs default-jdk"
+    PYENV_BUILD_PKG="libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
+    LANG_PKGS="cmake gdb golang clang nodejs default-jdk"
 
 else
     echo "Unsupported package manager"
     exit 1
 fi
 
-function mklink() {
-    rm -rf ~/$2
-    ln -sf $PWD/$1 ~/$2
-}
 
 function info() {
     echo -e "\033[96m$1 ...\033[0m"
@@ -33,19 +37,40 @@ function info() {
 function install_base() {
     info "Installing Base Tools"
 
-    $PM_INSTALL git curl wget vim fish tmux ranger man $OPENSSH_PKG
+    $PM_INSTALL stow git btop curl wget vim fish tmux ranger man $OPENSSH_PKG
+
+    # AUR
+    if [$LINUX_DIST == arch]; then
+        git clone https://aur.archlinux.org/paru.git /tmp/paru
+        pushd /tmp/paru
+            makepkg -si
+        popd
+    fi
 }
 
 function install_dev() {
     info "Installing Dev Tools"
 
-    $PM_INSTALL $DEV_PKG cmake gdb
+    $PM_INSTALL $DEV_PKG $LANG_PKGS
+
+    curl https://pyenv.run | bash
+
+    $PM_INSTALL $PYENV_BUILD_PKG
+
+    # pyenv
+    fish -c "set -Ux PYENV_ROOT $HOME/.pyenv"
+    fish -c "fish_add_path $HOME/.pyenv/bin"
+}
+
+function install_desktop() {
+    info "Installing Desktop Environment"
+
+    $PM_INSTALL $DESKTOP_PKG
 }
 
 function setup_fish() {
     info "Setting up fish shell"
 
-    mklink fish .config/fish
     chsh -s $(which fish)
     fish -c "set -U fish_greeting"
 }
@@ -73,82 +98,42 @@ function setup_ssh() {
 function setup_vim() {
     info "Setting up vim"
 
-    git clone https://github.com/dracula/vim.git $PWD/.vim/pack/themes/start/dracula
-    git clone https://github.com/itchyny/lightline.vim.git $PWD/.vim/pack/themes/start/lightline
-
     mkdir -p ~/.cache/vim/undo
-    mklink .vim .vim
-    mklink .vimrc .vimrc
     fish -c "set -Ux EDITOR vim"
 }
 
-function setup_tmux() {
-    info "Setting up tmux"
-
-    git clone https://github.com/tmux-plugins/tpm.git $PWD/.tmux/plugins/tpm
-
-    mklink .tmux .tmux
-    mklink .tmux.conf .tmux.conf
-    ~/.tmux/plugins/tpm/bin/install_plugins
-}
-
-function setup_ranger() {
-    info "Setting up ranger"
-
-    git clone https://github.com/cdump/ranger-devicons2 $PWD/ranger/plugins/devicons2
-
-    mklink ranger .config/ranger
-}
-
-function setup_base() {
+function setup_config() {
 
     mkdir -p ~/.config
-
-    mklink .Xresources .Xresources
+    stow */
 
     setup_fish
     setup_git
     setup_ssh
     setup_vim
-    setup_tmux
-    setup_ranger
-}
-
-function setup_languages() {
-    info "Setting up languages"
-
-    $PM_INSTALL $LANG_PKGS
-
-    curl https://pyenv.run | bash
-
-    $PM_INSTALL $PYENV_BUILD_PKG
-
-    # pyenv
-    fish -c "set -Ux PYENV_ROOT $HOME/.pyenv"
-    fish -c "fish_add_path $HOME/.pyenv/bin"
 }
 
 PS3="Please select a configuration (enter the number): "
 
 while true; do
-    select opt in "mini" "dev" "dev-full" "exit"; do
+    select opt in "mini" "dev" "full" "exit"; do
         case "$REPLY" in
         1)
             install_base
-            setup_base
+            setup_config
             break
             ;;
         2)
             install_base
             install_dev
-            setup_base
+            setup_config
             break
             ;;
         3)
             install_base
             install_dev
-            setup_base
-            setup_languages
+            install_desktop
+            setup_config
             break
             ;;
         4)

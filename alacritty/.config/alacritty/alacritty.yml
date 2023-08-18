@@ -1,0 +1,30 @@
+import:
+  - ~/.config/alacritty/dracula.yml
+
+font:
+  normal:
+    family: JetBrainsMono NerdFont
+    style: Regular
+
+  bold:
+    family: JetBrainsMono NerdFont
+    style: Bold
+
+  italic:
+    family: JetBrainsMono NerdFont
+    style: Italic
+
+  bold_italic:
+    family: JetBrainsMono NerdFont
+    style: Bold Italic
+
+  size: 16.0
+
+window:
+  decorations: none
+  dynamic_padding: true
+  opacity: 0.9
+
+
+mouse:
+  hide_when_typing: true    
