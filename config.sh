@@ -10,6 +10,7 @@ fi
 if [$LINUX_DIST == arch]; then
     sudo pacman -Syy
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
+    AUR_INSTALL="paru -S --noconfirm"
     DEV_PKG="base-devel qemu-full"
     OPENSSH_PKG="openssh"
     PYENV_BUILD_PKG="openssl zlib xz tk"
@@ -66,6 +67,10 @@ function install_desktop() {
     info "Installing Desktop Environment"
 
     $PM_INSTALL $DESKTOP_PKG
+
+    if [$LINUX_DIST == arch]; then
+        $AUR_INSTALL visual-studio-code-bin
+    fi
 }
 
 function setup_fish() {
