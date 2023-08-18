@@ -1,5 +1,2 @@
-fish/fish_variables
-*.pyc
-.vim/
-.tmux/
-ranger/plugins
+fish_variables
+__pycache__
