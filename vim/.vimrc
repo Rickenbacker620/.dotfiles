@@ -86,6 +86,7 @@ augroup END
 
 packadd! dracula
 syntax enable
+let g:dracula_italic = 0
 colorscheme dracula
 
 "===vim lightline
