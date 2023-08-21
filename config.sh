@@ -15,7 +15,7 @@ if [$LINUX_DIST == arch]; then
     OPENSSH_PKG="openssh"
     PYENV_BUILD_PKG="openssl zlib xz tk"
     LANG_PKGS="cmake gdb go clang dotnet-sdk nodejs jdk8-openjdk"
-    DESKTOP_PKG="bspwm rofi polybar mpv sxhkd xorg-server xorg-xinit noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
+    DESKTOP_PKG="bspwm sxhkd rofi polybar mpv sxhkd xorg-server xorg-xinit noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
 
 elif [$LINUX_DIST == debian]; then
     sudo apt-get update
@@ -38,7 +38,7 @@ function info() {
 function install_base() {
     info "Installing Base Tools"
 
-    $PM_INSTALL stow git btop curl wget vim fish tmux ranger man zoxide $OPENSSH_PKG
+    $PM_INSTALL stow git btop highlight curl wget vim fish tmux ranger man zoxide $OPENSSH_PKG
 
     # AUR
     if [ $LINUX_DIST == arch ]; then
@@ -69,7 +69,7 @@ function install_desktop() {
     $PM_INSTALL $DESKTOP_PKG
 
     if [$LINUX_DIST == arch]; then
-        $AUR_INSTALL visual-studio-code-bin
+        $AUR_INSTALL visual-studio-code-bin google-chrome
     fi
 }
 
@@ -78,6 +78,7 @@ function setup_fish() {
 
     chsh -s $(which fish)
     fish -c "set -U fish_greeting"
+    fish -c "set -Ux RANGER_LOAD_DEFAULT_RC false"
     fish -c "fish_vi_key_bindings"
 }
 
