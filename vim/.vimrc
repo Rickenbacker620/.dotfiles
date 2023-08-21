@@ -75,8 +75,8 @@ set viminfofile=NONE
 
 
 "===cursor shape settings
-let &t_SI.="\e[6 q"
-let &t_EI.="\e[2 q"
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
 
 "===fade whitespace/tabs
 augroup dracula_customization

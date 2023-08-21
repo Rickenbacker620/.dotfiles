@@ -15,7 +15,7 @@ if [$LINUX_DIST == arch]; then
     OPENSSH_PKG="openssh"
     PYENV_BUILD_PKG="openssl zlib xz tk"
     LANG_PKGS="cmake gdb go clang dotnet-sdk nodejs jdk8-openjdk"
-    DESKTOP_PKG="bspwm rofi polybar mpv sxhkd xorg-server noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
+    DESKTOP_PKG="bspwm rofi polybar mpv sxhkd xorg-server xorg-xinit noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
 
 elif [$LINUX_DIST == debian]; then
     sudo apt-get update
@@ -38,10 +38,10 @@ function info() {
 function install_base() {
     info "Installing Base Tools"
 
-    $PM_INSTALL stow git btop curl wget vim fish tmux ranger man $OPENSSH_PKG
+    $PM_INSTALL stow git btop curl wget vim fish tmux ranger man zoxide $OPENSSH_PKG
 
     # AUR
-    if [$LINUX_DIST == arch]; then
+    if [ $LINUX_DIST == arch ]; then
         git clone https://aur.archlinux.org/paru.git /tmp/paru
         pushd /tmp/paru
             makepkg -si
@@ -78,6 +78,7 @@ function setup_fish() {
 
     chsh -s $(which fish)
     fish -c "set -U fish_greeting"
+    fish -c "fish_vi_key_bindings"
 }
 
 function setup_git() {
