@@ -15,7 +15,7 @@ if [$LINUX_DIST == arch]; then
     OPENSSH_PKG="openssh"
     PYENV_BUILD_PKG="openssl zlib xz tk"
     LANG_PKGS="cmake gdb go clang dotnet-sdk nodejs jdk8-openjdk"
-    DESKTOP_PKG="bspwm sxhkd rofi polybar mpv sxhkd xorg-server xorg-xinit noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
+    DESKTOP_PKG="bspwm sxhkd rofi polybar feh mpv xorg-server xorg-xinit xorg-xrandr noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
 
 elif [$LINUX_DIST == debian]; then
     sudo apt-get update
