@@ -7,7 +7,7 @@ else
     echo "/etc/os-release file not found."
 fi
 
-if [$LINUX_DIST == arch]; then
+if [ $LINUX_DIST == arch ]; then
     sudo pacman -Syy
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
     AUR_INSTALL="paru -S --noconfirm"
@@ -15,9 +15,9 @@ if [$LINUX_DIST == arch]; then
     OPENSSH_PKG="openssh"
     PYENV_BUILD_PKG="openssl zlib xz tk"
     LANG_PKGS="cmake gdb go clang dotnet-sdk nodejs jdk8-openjdk"
-    DESKTOP_PKG="bspwm sxhkd rofi polybar feh mpv xorg-server xorg-xinit xorg-xrandr libvirt cockpit cockpit-storaged cockpit-machines virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
+    DESKTOP_PKG="alacritty picom bspwm sxhkd rofi polybar feh mpv xorg-server xorg-xinit xorg-xrandr libvirt cockpit cockpit-storaged cockpit-machines virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
 
-elif [$LINUX_DIST == debian]; then
+elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
     DEV_PKG="build-essential qemu-system"
@@ -68,7 +68,7 @@ function install_desktop() {
 
     $PM_INSTALL $DESKTOP_PKG
 
-    if [$LINUX_DIST == arch]; then
+    if [ $LINUX_DIST == arch ]; then
         $AUR_INSTALL visual-studio-code-bin google-chrome
     fi
 }

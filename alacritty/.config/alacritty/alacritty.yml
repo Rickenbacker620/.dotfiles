@@ -18,7 +18,7 @@ font:
     family: JetBrainsMono NerdFont
     style: Bold Italic
 
-  size: 16.0
+  size: 13.0
 
 window:
   decorations: none
@@ -26,4 +26,4 @@ window:
 
 
 mouse:
-  hide_when_typing: true    
+  hide_when_typing: true
