@@ -104,8 +104,11 @@ function setup_ssh() {
 function setup_vim() {
     info "Setting up vim"
 
-    mkdir -p ~/.cache/vim/undo
-    fish -c "set -Ux EDITOR vim"
+    if command -v nvim &>/dev/null; then
+        fish -c "set -Ux EDITOR nvim"
+    else
+        fish -c "set -Ux EDITOR vim"
+    fi
 }
 
 function setup_config() {
