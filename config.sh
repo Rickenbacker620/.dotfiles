@@ -113,8 +113,9 @@ function setup_vim() {
 
 function setup_config() {
 
+    rm -rf ~/.config
     mkdir -p ~/.config
-    stow */
+    stow --adopt */
 
     setup_fish
     setup_git
