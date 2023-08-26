@@ -11,19 +11,17 @@ if [ $LINUX_DIST == arch ]; then
     sudo pacman -Syy
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
     AUR_INSTALL="paru -S --noconfirm"
-    DEV_PKG="base-devel qemu-full"
-    OPENSSH_PKG="openssh"
+    BASE_PKG="stow git btop highlight curl wget vim fish tmux ranger man zoxide openssh base-devel"
+    DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs jdk8-openjdk"
     PYENV_BUILD_PKG="openssl zlib xz tk"
-    LANG_PKGS="cmake gdb go clang dotnet-sdk nodejs jdk8-openjdk"
     DESKTOP_PKG="alacritty picom bspwm sxhkd rofi polybar feh mpv xorg-server xorg-xinit xorg-xrandr libvirt cockpit cockpit-storaged cockpit-machines virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
 
 elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
-    DEV_PKG="build-essential qemu-system"
+    DEV_PKG="build-essential qemu-system cmake gdb golang clang nodejs default-jdk"
     OPENSSH_PKG="openssh-server"
     PYENV_BUILD_PKG="libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
-    LANG_PKGS="cmake gdb golang clang nodejs default-jdk"
 
 else
     echo "Unsupported package manager"
@@ -38,7 +36,7 @@ function info() {
 function install_base() {
     info "Installing Base Tools"
 
-    $PM_INSTALL stow git btop highlight curl wget vim fish tmux ranger man zoxide $OPENSSH_PKG
+    $PM_INSTALL $BASE_PKG
 
     # AUR
     if [ $LINUX_DIST == arch ]; then
@@ -52,7 +50,7 @@ function install_base() {
 function install_dev() {
     info "Installing Dev Tools"
 
-    $PM_INSTALL $DEV_PKG $LANG_PKGS
+    $PM_INSTALL $DEV_PKG
 
     curl https://pyenv.run | bash
 
@@ -79,7 +77,6 @@ function setup_fish() {
     chsh -s $(which fish)
     fish -c "set -U fish_greeting"
     fish -c "set -Ux RANGER_LOAD_DEFAULT_RC false"
-    fish -c "fish_vi_key_bindings"
 }
 
 function setup_git() {
