@@ -11,7 +11,8 @@ if [ $LINUX_DIST == arch ]; then
     sudo pacman -Syy
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
     AUR_INSTALL="paru -S --noconfirm"
-    BASE_PKG="stow git btop highlight curl wget vim fish tmux ranger man zoxide openssh base-devel"
+
+    BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide openssh base-devel"
     DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs jdk8-openjdk"
     PYENV_BUILD_PKG="openssl zlib xz tk"
     DESKTOP_PKG="alacritty picom bspwm sxhkd rofi polybar feh mpv xorg-server xorg-xinit xorg-xrandr libvirt cockpit cockpit-storaged cockpit-machines virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
@@ -19,8 +20,9 @@ if [ $LINUX_DIST == arch ]; then
 elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
-    DEV_PKG="build-essential qemu-system cmake gdb golang clang nodejs default-jdk"
-    OPENSSH_PKG="openssh-server"
+
+    BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide openssh-server build-essential"
+    DEV_PKG="qemu-system cmake gdb golang clang nodejs default-jdk"
     PYENV_BUILD_PKG="libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
 
 else

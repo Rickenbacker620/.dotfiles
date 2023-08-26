@@ -35,7 +35,7 @@ noremap <silent> 0 :nohlsearch<CR>
 
 "===save&quit
 noremap <C-s> :w<CR>
-noremap <C-q> :q<CR>
+noremap <C-q> :q!<CR>
 
 "===combine lines
 noremap Q J
@@ -45,9 +45,7 @@ noremap Q J
 "===leaderkey
 let mapleader=" "
 
-set guicursor=i-ci:ver30-iCursor-blinkwait300-blinkon200-blinkoff150
 set hlsearch
-set laststatus=2
 set cursorline
 set number
 set relativenumber
@@ -55,7 +53,6 @@ set scrolloff=7
 set shiftwidth=2
 set tabstop=4
 set softtabstop=4
-set termguicolors
 set list
 set listchars=tab:→\ ,
 set wrap
@@ -65,34 +62,4 @@ set mouse=a
 set ignorecase
 set wildignorecase
 set smartcase
-set undofile
-set undodir=~/.cache/vim/undo
 set clipboard+=unnamedplus
-set ttimeout
-set ttimeoutlen=1
-set ttyfast
-set viminfofile=NONE
-
-
-"===cursor shape settings
-let &t_SI = "\e[6 q"
-let &t_EI = "\e[2 q"
-
-"===fade whitespace/tabs
-augroup dracula_customization
-    au!
-    autocmd ColorScheme dracula hi! link SpecialKey DraculaSubtle
-augroup END
-
-packadd! dracula
-syntax enable
-let g:dracula_italic = 0
-colorscheme dracula
-
-"===vim lightline
-let g:lightline = {
-        \ 'colorscheme': 'dracula',
-        \ 'active': {
-        \   'left': [ [ 'mode', 'paste'  ], [ 'filename'  ], [ 'bufferline'  ]  ],
-        \ },
-\ }
