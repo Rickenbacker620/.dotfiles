@@ -84,7 +84,7 @@ function setup_fish() {
 function setup_git() {
     info "Setting up git"
 
-    git config --global user.email "1057558227@qq.com"
+    git config --global user.email "fu78sion@gmail.com"
     git config --global user.name "Rickenbacker620"
 }
 
