@@ -13,17 +13,28 @@ if [ $LINUX_DIST == arch ]; then
     AUR_INSTALL="paru -S --noconfirm"
 
     BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide openssh base-devel"
+
     DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs jdk8-openjdk"
+
     PYENV_BUILD_PKG="openssl zlib xz tk"
-    DESKTOP_PKG="alacritty picom bspwm sxhkd rofi polybar feh mpv xorg-server xorg-xinit xorg-xrandr libvirt cockpit cockpit-storaged cockpit-machines virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd papirus-icon-theme"
+
+    DESKTOP_PKG="hyprland waybar wofi kitty pulseaudio hyprpaper power-profiles-daemon mpv libvirt virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts "
+
+    SERVER_PKG="cockpit cockpit-storaged cockpit-machines"
 
 elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
 
-    BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide openssh-server build-essential"
+    BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide build-essential  openssh-client"
+
     DEV_PKG="qemu-system cmake gdb golang clang nodejs default-jdk"
+
     PYENV_BUILD_PKG="libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
+
+    DESKTOP_PKG="mpv libvirt virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd"
+
+    SERVER_PKG="cockpit cockpit-storaged cockpit-machines openssh-server"
 
 else
     echo "Unsupported package manager"
@@ -71,6 +82,12 @@ function install_desktop() {
     if [ $LINUX_DIST == arch ]; then
         $AUR_INSTALL visual-studio-code-bin google-chrome
     fi
+}
+
+function install_server() {
+    info "Installing Server Environment"
+
+    $PM_INSTALL $SERVER_PKG
 }
 
 function setup_fish() {
@@ -126,7 +143,7 @@ function setup_config() {
 PS3="Please select a configuration (enter the number): "
 
 while true; do
-    select opt in "mini" "dev" "full" "exit"; do
+    select opt in "mini" "dev" "desktop" "server" "exit"; do
         case "$REPLY" in
         1)
             install_base
@@ -147,6 +164,13 @@ while true; do
             break
             ;;
         4)
+            install_base
+            install_dev
+            install_server
+            setup_config
+            exit 0
+            ;;
+        5)
             echo "Exiting..."
             exit 0
             ;;
