@@ -8,7 +8,7 @@ color: @purple;
 
 * {
     /* `otf-font-awesome` is required to be installed for icons */
-    font-family: FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+    font-family: NotoSans, FontAwesome6Free;
     font-size: 13px;
 }
 
@@ -34,14 +34,14 @@ window#waybar.solo {
 }
 */
 
-window#waybar.termite {
+/* window#waybar.termite {
     background-color: #3F3F3F;
 }
 
 window#waybar.chromium {
     background-color: #000000;
     border: none;
-}
+} */
 
 button {
     /* Use box-shadow instead of border so the text isn't offset */
@@ -89,11 +89,11 @@ button:hover {
 #clock,
 #battery,
 #cpu,
+#network,
 #memory,
 #disk,
 #temperature,
 #backlight,
-#network,
 #pulseaudio,
 #wireplumber,
 #custom-media,
@@ -133,7 +133,7 @@ button:hover {
 
 #battery.charging, #battery.plugged {
     color: #ffffff;
-    background-color: #26A65B;
+    background-color: @green;
 }
 
 @keyframes blink {
@@ -182,8 +182,13 @@ label:focus {
     color: #000000;
 }
 
+#network {
+    background-color: @cyan;
+    color: #000000;
+}
+
 #memory {
-    background-color: #9b59b6;
+    background-color: @purple;
 }
 
 #disk {
@@ -195,7 +200,7 @@ label:focus {
 }
 
 #network {
-    background-color: #2980b9;
+    background-color: @cyan;
 }
 
 #network.disconnected {
@@ -203,7 +208,7 @@ label:focus {
 }
 
 #pulseaudio {
-    background-color: #f1c40f;
+    background-color: @yellow;
     color: #000000;
 }
 
