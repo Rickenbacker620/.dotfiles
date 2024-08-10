@@ -79,6 +79,10 @@ window#waybar {
   animation-direction: alternate;
 }
 
+#power-profiles-daemon {
+    min-width: 15px;
+}
+
 #network.disconnected {
   color: @red;
 }
