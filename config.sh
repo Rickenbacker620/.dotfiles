@@ -14,11 +14,11 @@ if [ $LINUX_DIST == arch ]; then
 
     BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide openssh base-devel"
 
-    DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs jdk8-openjdk"
+    DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk"
 
     PYENV_BUILD_PKG="openssl zlib xz tk"
 
-    DESKTOP_PKG="hyprland waybar wofi kitty pulseaudio brightnessctl lhyprpaper power-profiles-daemon mpv libvirt virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
+    DESKTOP_PKG="hyprland waybar wofi kitty pipewire wireplumber brightnessctl hyprpaper power-profiles-daemon mpv libvirt virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
 
     SERVER_PKG="cockpit cockpit-storaged cockpit-machines"
 
@@ -26,7 +26,7 @@ elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
 
-    BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide build-essential  openssh-client"
+    BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide build-essential openssh-client"
 
     DEV_PKG="qemu-system cmake gdb golang clang nodejs default-jdk"
 
