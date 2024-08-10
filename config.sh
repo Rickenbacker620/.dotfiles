@@ -10,7 +10,7 @@ fi
 if [ $LINUX_DIST == arch ]; then
     sudo pacman -Syy
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
-    AUR_INSTALL="paru -S --noconfirm"
+    AUR_INSTALL="yay --noconfirm"
 
     BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide openssh base-devel"
 
@@ -18,7 +18,7 @@ if [ $LINUX_DIST == arch ]; then
 
     PYENV_BUILD_PKG="openssl zlib xz tk"
 
-    DESKTOP_PKG="hyprland waybar wofi kitty pipewire wireplumber brightnessctl hyprpaper power-profiles-daemon mpv libvirt virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
+    DESKTOP_PKG="hyprland waybar wofi kitty pipewire wireplumber brightnessctl bluez bluez-utils hyprpaper power-profiles-daemon mpv libvirt virt-manager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
 
     SERVER_PKG="cockpit cockpit-storaged cockpit-machines"
 
@@ -53,8 +53,8 @@ function install_base() {
 
     # AUR
     if [ $LINUX_DIST == arch ]; then
-        git clone https://aur.archlinux.org/paru.git /tmp/paru
-        pushd /tmp/paru
+        git clone https://aur.archlinux.org/yay-bin.git /tmp/yay
+        pushd /tmp/yay
             makepkg -si
         popd
     fi
