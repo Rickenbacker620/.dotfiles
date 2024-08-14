@@ -18,7 +18,7 @@ if [ $LINUX_DIST == arch ]; then
 
     PYENV_BUILD_PKG="openssl zlib xz tk"
 
-    DESKTOP_PKG="hyprland waybar wofi kitty pipewire wireplumber brightnessctl bluez bluez-utils hyprpaper power-profiles-daemon mpv libvirt virt-manager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
+    DESKTOP_PKG="hyprland waybar wl-clipboard wofi kitty pipewire wireplumber brightnessctl fcitx5-im bluez bluez-utils hyprpaper power-profiles-daemon mpv libvirt virt-manager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
 
     SERVER_PKG="cockpit cockpit-storaged cockpit-machines"
 
