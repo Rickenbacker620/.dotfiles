@@ -19,7 +19,7 @@ if [ $LINUX_DIST == arch ]; then
 
     BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide openssh base-devel"
 
-    DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk"
+    DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk pyenv"
 
     PYENV_BUILD_PKG="openssl zlib xz tk"
 
@@ -70,13 +70,17 @@ function install_dev() {
 
     $PM_INSTALL $DEV_PKG
 
-    curl https://pyenv.run | bash
-
     $PM_INSTALL $PYENV_BUILD_PKG
 
-    # pyenv
-    fish -c "set -Ux PYENV_ROOT $HOME/.pyenv"
-    fish -c "fish_add_path $HOME/.pyenv/bin"
+    # if not arch linux, install pyenv from source
+
+    if [ $LINUX_DIST == debian ]; then
+        curl https://pyenv.run | bash
+
+        # pyenv
+        fish -c "set -Ux PYENV_ROOT $HOME/.pyenv"
+        fish -c "fish_add_path $HOME/.pyenv/bin"
+    fi
 }
 
 function install_desktop() {
