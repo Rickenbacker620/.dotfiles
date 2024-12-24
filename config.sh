@@ -17,7 +17,7 @@ if [ $LINUX_DIST == arch ]; then
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
     AUR_INSTALL="yay --noconfirm"
 
-    BASE_PKG="stow git btop highlight curl wget neovim fish tmux yazi man zoxide openssh base-devel"
+    BASE_PKG="stow git btop highlight curl wget neovim fish tmux yazi man zoxide openssh ffmpeg p7zip jq poppler fd ripgrep fzf imagemagick base-devel"
 
     DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk uv rustup"
 
