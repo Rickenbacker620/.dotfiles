@@ -17,9 +17,9 @@ if [ $LINUX_DIST == arch ]; then
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
     AUR_INSTALL="yay --noconfirm"
 
-    BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide openssh base-devel"
+    BASE_PKG="stow git btop highlight curl wget neovim fish tmux yazi man zoxide openssh base-devel"
 
-    DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk uv"
+    DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk uv rustup"
 
     DESKTOP_PKG="hyprland waybar wl-clipboard wofi kitty pipewire wireplumber brightnessctl fcitx5-im bluez bluez-utils hyprpaper power-profiles-daemon mpv libvirt virt-manager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
 
@@ -29,7 +29,7 @@ elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
 
-    BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide build-essential openssh-client"
+    BASE_PKG="stow git btop highlight curl wget neovim fish tmux man zoxide build-essential openssh-client"
 
     DEV_PKG="qemu-system cmake gdb golang clang nodejs default-jdk"
 
@@ -58,6 +58,12 @@ function install_base() {
         pushd /tmp/yay
             makepkg -si
         popd
+    fi
+
+    if [ $LINUX_DIST == debian ]; then
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        rustup update
+        cargo install --locked yazi-fm yazi-cli
     fi
 }
 
