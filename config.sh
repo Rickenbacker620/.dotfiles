@@ -19,13 +19,11 @@ if [ $LINUX_DIST == arch ]; then
 
     BASE_PKG="stow git btop highlight curl wget neovim fish tmux ranger man zoxide openssh base-devel"
 
-    DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk pyenv"
-
-    PYENV_BUILD_PKG="openssl zlib xz tk"
+    DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk uv"
 
     DESKTOP_PKG="hyprland waybar wl-clipboard wofi kitty pipewire wireplumber brightnessctl fcitx5-im bluez bluez-utils hyprpaper power-profiles-daemon mpv libvirt virt-manager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
 
-    SERVER_PKG="cockpit cockpit-storaged cockpit-machines"
+    SERVER_PKG=""
 
 elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
@@ -35,11 +33,9 @@ elif [ $LINUX_DIST == debian ]; then
 
     DEV_PKG="qemu-system cmake gdb golang clang nodejs default-jdk"
 
-    PYENV_BUILD_PKG="libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
-
     DESKTOP_PKG="mpv libvirt virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd"
 
-    SERVER_PKG="cockpit cockpit-storaged cockpit-machines openssh-server"
+    SERVER_PKG="openssh-server"
 
 else
     echo "Unsupported package manager"
@@ -70,16 +66,10 @@ function install_dev() {
 
     $PM_INSTALL $DEV_PKG
 
-    $PM_INSTALL $PYENV_BUILD_PKG
-
-    # if not arch linux, install pyenv from source
+    # if not arch linux, install uv from source
 
     if [ $LINUX_DIST == debian ]; then
-        curl https://pyenv.run | bash
-
-        # pyenv
-        fish -c "set -Ux PYENV_ROOT $HOME/.pyenv"
-        fish -c "fish_add_path $HOME/.pyenv/bin"
+        curl -LsSf https://astral.sh/uv/install.sh | sh
     fi
 }
 
@@ -96,7 +86,10 @@ function install_desktop() {
 function install_server() {
     info "Installing Server Environment"
 
-    $PM_INSTALL $SERVER_PKG
+    # install server packages only if SERVER_PKG is not empty
+    if [ -n "$SERVER_PKG" ]; then
+        $PM_INSTALL $SERVER_PKG
+    fi
 }
 
 function setup_fish() {
