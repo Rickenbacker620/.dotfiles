@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$EUID" -ne 0 ] || ! groups | grep -qE 'sudo|wheel'; then
+if [ "$EUID" -ne 0 ] && ! groups | grep -qE 'sudo|wheel'; then
   echo "This script must be run as root or by a user who can execute sudo."
   exit 1
 fi
