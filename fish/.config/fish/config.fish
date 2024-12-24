@@ -9,15 +9,12 @@ function fish_command_not_found
 end
 
 bind -M insert \cf forward-char
-bind \ep up-or-search
 
 if status --is-interactive
     alias e="$EDITOR"
-    alias r="yazi"
     abbr --add dotdot --regex '^\.\.+$' --function multicd
 
     if type -q zoxide
         zoxide init fish | source
     end
 end
-
