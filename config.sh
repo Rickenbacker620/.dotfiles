@@ -103,7 +103,6 @@ function setup_fish() {
 
     chsh -s $(which fish)
     fish -c "set -U fish_greeting"
-    fish -c "set -Ux RANGER_LOAD_DEFAULT_RC false"
 }
 
 function setup_git() {

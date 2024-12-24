@@ -13,12 +13,8 @@ bind \ep up-or-search
 
 if status --is-interactive
     alias e="$EDITOR"
-    alias r="ranger"
+    alias r="yazi"
     abbr --add dotdot --regex '^\.\.+$' --function multicd
-
-    if type -q pyenv
-        pyenv init - | source
-    end
 
     if type -q zoxide
         zoxide init fish | source

@@ -13,10 +13,9 @@ else
     export EDITOR=vim
 fi
 
-export RANGER_LOAD_DEFAULT_RC=false
 export LESSHISTFILE=-
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias e="$EDITOR"
-alias r="ranger"
+alias r="yazi"
