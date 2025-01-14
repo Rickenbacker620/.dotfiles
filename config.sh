@@ -19,7 +19,7 @@ if [ $LINUX_DIST == arch ]; then
 
     BASE_PKG="stow git btop highlight curl wget neovim fish tmux yazi man zoxide openssh ffmpeg p7zip jq poppler fd ripgrep fzf imagemagick base-devel docker"
 
-    DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk uv rustup"
+    DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk uv rustup postgresql"
 
     DESKTOP_PKG="hyprland waybar wl-clipboard wofi kitty pipewire wireplumber brightnessctl fcitx5-im bluez bluez-utils hyprpaper power-profiles-daemon mpv libvirt virt-manager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
 
@@ -27,9 +27,9 @@ elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
 
-    BASE_PKG="stow git btop highlight curl wget neovim fish tmux man zoxide build-essential openssh-client openssh-server docker ca-certificates"
+    BASE_PKG="stow git btop highlight curl wget neovim fish tmux man zoxide build-essential openssh-client openssh-server docker ca-certificates gnupg"
 
-    DEV_PKG="qemu-system cmake gdb golang clang nodejs default-jdk"
+    DEV_PKG="qemu-system cmake gdb golang clang nodejs default-jdk postgresql"
 
     DESKTOP_PKG="mpv libvirt virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd"
 
@@ -45,6 +45,15 @@ function info() {
 
 function install_base() {
     info "Installing Base Tools"
+
+    if [ $LINUX_DIST == arch ]; then
+        # Customize pacman and makepkg configs
+        sudo sed -i 's/#Color/Color/g' /etc/pacman.conf
+        sudo sed -i 's/#VerbosePkgLists/VerbosePkgLists/g' /etc/pacman.conf
+
+        # Dont download debug packages
+        sudo sed -i '/^OPTIONS=/ s/ debug/ !debug/' /etc/makepkg.conf
+    fi
 
     $PM_INSTALL $BASE_PKG
 
@@ -91,7 +100,24 @@ function install_dev() {
     # if not arch linux, install uv from source
 
     if [ $LINUX_DIST == debian ]; then
+
+        # UV
+        info "Installing uv"
         curl -LsSf https://astral.sh/uv/install.sh | sh
+
+        # MongoDB
+        info "Installing MongoDB"
+        curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+        sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
+        --dearmor
+
+        echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+        sudo apt-get update
+        sudo apt-get install -y mongodb-org
+    fi
+
+    if [ $LINUX_DIST == arch ]; then
+        $AUR_INSTALL mongodb-bin
     fi
 }
 
@@ -164,13 +190,10 @@ while true; do
             break
             ;;
         2)
-            install_base
             install_dev
             break
             ;;
         3)
-            install_base
-            install_dev
             install_desktop
             break
             ;;
