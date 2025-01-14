@@ -46,10 +46,6 @@ function info() {
 function install_base() {
     info "Installing Base Tools"
 
-    if [ $LINUX_DIST == arch ]; then
-        
-    fi
-
     $PM_INSTALL $BASE_PKG
 
     # AUR
