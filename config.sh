@@ -17,25 +17,21 @@ if [ $LINUX_DIST == arch ]; then
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
     AUR_INSTALL="yay --noconfirm"
 
-    BASE_PKG="stow git btop highlight curl wget neovim fish tmux yazi man zoxide openssh ffmpeg p7zip jq poppler fd ripgrep fzf imagemagick base-devel"
+    BASE_PKG="stow git btop highlight curl wget neovim fish tmux yazi man zoxide openssh ffmpeg p7zip jq poppler fd ripgrep fzf imagemagick base-devel docker"
 
     DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk uv rustup"
 
     DESKTOP_PKG="hyprland waybar wl-clipboard wofi kitty pipewire wireplumber brightnessctl fcitx5-im bluez bluez-utils hyprpaper power-profiles-daemon mpv libvirt virt-manager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
 
-    SERVER_PKG=""
-
 elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
 
-    BASE_PKG="stow git btop highlight curl wget neovim fish tmux man zoxide build-essential openssh-client"
+    BASE_PKG="stow git btop highlight curl wget neovim fish tmux man zoxide build-essential openssh-client openssh-server docker ca-certificates"
 
     DEV_PKG="qemu-system cmake gdb golang clang nodejs default-jdk"
 
     DESKTOP_PKG="mpv libvirt virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd"
-
-    SERVER_PKG="openssh-server"
 
 else
     echo "Unsupported package manager"
@@ -50,6 +46,10 @@ function info() {
 function install_base() {
     info "Installing Base Tools"
 
+    if [ $LINUX_DIST == arch ]; then
+        
+    fi
+
     $PM_INSTALL $BASE_PKG
 
     # AUR
@@ -61,10 +61,24 @@ function install_base() {
     fi
 
     if [ $LINUX_DIST == debian ]; then
+
+        # Yazi
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
         . "$HOME/.cargo/env"
         rustup update
         cargo install --locked yazi-fm yazi-cli
+
+        # Docker
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+        chmod a+r /etc/apt/keyrings/docker.asc
+
+        echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+        $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+        tee /etc/apt/sources.list.d/docker.list > /dev/null
+        apt-get update
+        apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     fi
 }
 
@@ -87,15 +101,6 @@ function install_desktop() {
 
     if [ $LINUX_DIST == arch ]; then
         $AUR_INSTALL visual-studio-code-bin google-chrome
-    fi
-}
-
-function install_server() {
-    info "Installing Server Environment"
-
-    # install server packages only if SERVER_PKG is not empty
-    if [ -n "$SERVER_PKG" ]; then
-        $PM_INSTALL $SERVER_PKG
     fi
 }
 
@@ -151,32 +156,26 @@ function setup_config() {
 PS3="Please select a configuration (enter the number): "
 
 while true; do
-    select opt in "mini" "dev" "desktop" "server" "exit"; do
+    select opt in "Install base pkgs" "Install dev pkgs" "Install desktop pkgs" "Config" "Exit"; do
         case "$REPLY" in
         1)
             install_base
-            setup_config
             break
             ;;
         2)
             install_base
             install_dev
-            setup_config
             break
             ;;
         3)
             install_base
             install_dev
             install_desktop
-            setup_config
             break
             ;;
         4)
-            install_base
-            install_dev
-            install_server
             setup_config
-            exit 0
+            break
             ;;
         5)
             echo "Exiting..."
