@@ -51,6 +51,9 @@ function install_base() {
         sudo sed -i 's/#Color/Color/g' /etc/pacman.conf
         sudo sed -i 's/#VerbosePkgLists/VerbosePkgLists/g' /etc/pacman.conf
 
+        # Comment the NoProgressBar option
+        sudo sed -i 's/NoProgressBar/#NoProgressBar/g' /etc/pacman.conf
+
         # Dont download debug packages
         sudo sed -i '/^OPTIONS=/ s/ debug/ !debug/' /etc/makepkg.conf
     fi
