@@ -58,13 +58,18 @@ function install_base() {
 
     if [ $LINUX_DIST == debian ]; then
 
-        # Yazi
+        # Rust
+        info "Installing Rust"
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
         . "$HOME/.cargo/env"
         rustup update
+
+        # Yazi
+        info "Installing Yazi"
         cargo install --locked yazi-fm yazi-cli
 
         # Docker
+        info "Installing Docker"
         sudo install -m 0755 -d /etc/apt/keyrings
         sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
         sudo chmod a+r /etc/apt/keyrings/docker.asc
