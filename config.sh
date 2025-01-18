@@ -8,6 +8,9 @@ fi
 if [ -e /etc/os-release ]; then
     . /etc/os-release
     LINUX_DIST=$ID
+    if [ $LINUX_DIST == archarm ]; then
+        LINUX_DIST=arch
+    fi
 else
     echo "/etc/os-release file not found."
 fi
