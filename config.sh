@@ -174,7 +174,7 @@ function create_user() {
     fi
 
     # Create user
-    if ! useradd -m -s $(command -v fish) shiro; then
+    if ! useradd -m shiro; then
         echo "Failed to create user shiro"
         return 1
     fi
