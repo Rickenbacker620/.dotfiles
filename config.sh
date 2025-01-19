@@ -20,7 +20,7 @@ if [ $LINUX_DIST == arch ]; then
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
     AUR_INSTALL="yay --noconfirm"
 
-    ESSENTIAL_PKG="stow git btop highlight curl wget neovim fish tmux yazi man zoxide openssh ffmpeg p7zip jq poppler fd ripgrep fzf imagemagick base-devel docker"
+    ESSENTIAL_PKG="stow git btop highlight curl wget vim fish tmux yazi man zoxide openssh ffmpeg p7zip jq poppler fd ripgrep fzf imagemagick base-devel docker"
 
     DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk uv rustup postgresql"
 
@@ -30,7 +30,7 @@ elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
 
-    ESSENTIAL_PKG="stow git btop highlight curl wget neovim fish tmux man zoxide build-essential openssh-client openssh-server docker ca-certificates gnupg"
+    ESSENTIAL_PKG="stow git btop highlight curl wget vim fish tmux man zoxide build-essential openssh-client openssh-server docker ca-certificates gnupg"
 
     DEV_PKG="qemu-system cmake gdb golang clang nodejs default-jdk postgresql"
 
@@ -164,16 +164,6 @@ function setup_ssh() {
     echo $REPLY >> ~/.ssh/authorized_keys
 }
 
-function setup_vim() {
-    info "Setting up vim"
-
-    if command -v nvim &>/dev/null; then
-        fish -c "set -Ux EDITOR nvim"
-    else
-        fish -c "set -Ux EDITOR vim"
-    fi
-}
-
 function create_user() {
     info "Creating user shiro"
 
@@ -218,7 +208,6 @@ function setup_config() {
     setup_fish
     setup_git
     setup_ssh
-    setup_vim
 }
 
 PS3="Please select a configuration (enter the number): "
