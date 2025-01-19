@@ -17,6 +17,7 @@ fi
 
 if [ $LINUX_DIST == arch ]; then
     sudo pacman -Syy
+    PM_INSTALL_NOSUDO="pacman -S --noconfirm --needed"
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
     AUR_INSTALL="yay --noconfirm"
 
@@ -28,6 +29,7 @@ if [ $LINUX_DIST == arch ]; then
 
 elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
+    PM_INSTALL_NOSUDO="apt-get install -y"
     PM_INSTALL="sudo apt-get install -y"
 
     ESSENTIAL_PKG="stow git btop highlight curl wget vim fish tmux man zoxide build-essential openssh-client openssh-server docker ca-certificates gnupg"
@@ -166,6 +168,10 @@ function setup_ssh() {
 
 function create_user() {
     info "Creating user shiro"
+
+    # Install sudo
+    info "Installing sudo"
+    $PM_INSTALL_NOSUDO sudo
 
     # Check if user already exists
     if id "shiro" &>/dev/null; then
