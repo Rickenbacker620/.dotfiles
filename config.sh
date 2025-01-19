@@ -20,7 +20,7 @@ if [ $LINUX_DIST == arch ]; then
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
     AUR_INSTALL="yay --noconfirm"
 
-    BASE_PKG="stow git btop highlight curl wget neovim fish tmux yazi man zoxide openssh ffmpeg p7zip jq poppler fd ripgrep fzf imagemagick base-devel docker"
+    ESSENTIAL_PKG="stow git btop highlight curl wget neovim fish tmux yazi man zoxide openssh ffmpeg p7zip jq poppler fd ripgrep fzf imagemagick base-devel docker"
 
     DEV_PKG="qemu-full cmake gdb go clang dotnet-sdk nodejs npm jdk8-openjdk uv rustup postgresql"
 
@@ -30,7 +30,7 @@ elif [ $LINUX_DIST == debian ]; then
     sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
 
-    BASE_PKG="stow git btop highlight curl wget neovim fish tmux man zoxide build-essential openssh-client openssh-server docker ca-certificates gnupg"
+    ESSENTIAL_PKG="stow git btop highlight curl wget neovim fish tmux man zoxide build-essential openssh-client openssh-server docker ca-certificates gnupg"
 
     DEV_PKG="qemu-system cmake gdb golang clang nodejs default-jdk postgresql"
 
@@ -46,8 +46,8 @@ function info() {
     echo -e "\033[96m$1 ...\033[0m"
 }
 
-function install_base() {
-    info "Installing Base Tools"
+function install_essential() {
+    info "Installing Essential Tools"
 
     if [ $LINUX_DIST == arch ]; then
         # Customize pacman and makepkg configs
@@ -61,7 +61,7 @@ function install_base() {
         sudo sed -i '/^OPTIONS=/ s/ debug/ !debug/' /etc/makepkg.conf
     fi
 
-    $PM_INSTALL $BASE_PKG
+    $PM_INSTALL $ESSENTIAL_PKG
 
     # AUR
     if [ $LINUX_DIST == arch ]; then
@@ -174,6 +174,41 @@ function setup_vim() {
     fi
 }
 
+function create_user() {
+    info "Creating user shiro"
+
+    # Check if user already exists
+    if id "shiro" &>/dev/null; then
+        echo "User shiro already exists"
+        return 1
+    fi
+
+    # Create user
+    if ! useradd -m -s $(command -v fish) shiro; then
+        echo "Failed to create user shiro"
+        return 1
+    fi
+
+    # Modify user group
+    if [ "$LINUX_DIST" == "arch" ]; then
+        usermod -aG wheel shiro
+        echo "%wheel ALL=(ALL:ALL) ALL" > /etc/sudoers.d/01-wheel
+        chmod 440 /etc/sudoers.d/01-wheel
+    elif [ "$LINUX_DIST" == "debian" ]; then
+        usermod -aG sudo shiro
+        echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/01-sudo
+        chmod 440 /etc/sudoers.d/01-sudo
+    fi
+
+    # Set password
+    echo "Please set password for user shiro"
+    until passwd shiro; do
+        echo "Password setting failed, please try again"
+    done
+
+    echo "User shiro created successfully and added to admin group"
+}
+
 function setup_config() {
 
     rm -rf ~/.config
@@ -189,10 +224,10 @@ function setup_config() {
 PS3="Please select a configuration (enter the number): "
 
 while true; do
-    select opt in "Install base pkgs" "Install dev pkgs" "Install desktop pkgs" "Config" "Exit"; do
+    select opt in "Install essential pkgs" "Install dev pkgs" "Install desktop pkgs" "Create user" "Config" "Exit"; do
         case "$REPLY" in
         1)
-            install_base
+            install_essential
             break
             ;;
         2)
@@ -204,10 +239,14 @@ while true; do
             break
             ;;
         4)
-            setup_config
+            create_user
             break
             ;;
         5)
+            setup_config
+            break
+            ;;
+        6)
             echo "Exiting..."
             exit 0
             ;;

@@ -1,65 +1,85 @@
+" Install vim-plug
+let data_dir = '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-"+++++++++common+++++++++
+" Plugins
+call plug#begin()
+Plug 'itchyny/lightline.vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
+call plug#end()
 
-"===moving around
+" Plugin settings
+let g:dracula_colorterm = 0
+colorscheme dracula
+let g:lightline = {
+      \ 'colorscheme': 'dracula',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste'  ], [ 'filename'  ], [ 'bufferline'  ]  ],
+      \ },
+      \ }
+
+"============ Key Mappings ============
+" Navigation
 noremap H 4b
 noremap J 5j
 noremap K 5k
 noremap L 4w
 
-"===page up/down
+" Page scrolling
 noremap <C-e> <C-u>
 
-"===undo
+" Undo/Redo
 noremap <C-y> <C-r>
 
-"===inc dec 1
+" Number increment/decrement
 noremap _ <C-x>
 noremap + <C-a>
 
-"===select all
+" Select all text
 noremap <C-a> ggVG
 
-"===move the cursor out of the braket
+" Move cursor out of brackets in insert mode
 inoremap <C-l> <RIGHT>
 
-"===make Y copy till end of the line
+" Make Y consistent with D and C (yank until end of line)
 nnoremap Y y$
 
-"===searching select
+" Search navigation with centering
 noremap - Nzz
 noremap = nzz
 
-"===cancel highlight
+" Clear search highlighting
 noremap <silent> 0 :nohlsearch<CR>
 
-"===save&quit
+" Save and quit shortcuts
 noremap <C-s> :w<CR>
 noremap <C-q> :q!<CR>
 
-"===combine lines
+" Join lines
 noremap Q J
 
-"+++++++++common+++++++++
-
-"===leaderkey
+" Leader key
 let mapleader=" "
 
-set hlsearch
-set cursorline
-set number
-set relativenumber
-set scrolloff=7
-set shiftwidth=2
-set tabstop=4
-set softtabstop=4
-set list
-set listchars=tab:→\ ,
-set wrap
-set tw=0
-set noshowmode
-set mouse=a
-set ignorecase
-set wildignorecase
-set smartcase
-set clipboard+=unnamedplus
+"============ Basic Settings ============
+set hlsearch              " Highlight search results
+set cursorline           " Highlight current line
+set number               " Show line numbers
+set relativenumber       " Show relative line numbers
+set scrolloff=7          " Keep 7 lines above/below cursor
+set shiftwidth=2         " Number of spaces for autoindent
+set tabstop=4           " Number of spaces for tab
+set softtabstop=4       " Number of spaces for tab while editing
+set list                " Show invisible characters
+set listchars=tab:→\    " Show tabs as arrows
+set wrap                " Wrap long lines
+set tw=0                " No automatic text wrapping
+set noshowmode          " Don't show mode (lightline shows it)
+set mouse=a             " Enable mouse support
+set ignorecase          " Case insensitive search
+set wildignorecase      " Case insensitive command-line completion
+set smartcase           " Case sensitive if search pattern has uppercase
+set clipboard+=unnamedplus  " Use system clipboard
