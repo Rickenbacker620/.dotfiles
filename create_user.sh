@@ -28,7 +28,7 @@ else
 fi
 
 function create_user() {
-    info "Creating user shiro"
+    echo "Creating user shiro"
 
     # Check if user already exists
     if id "shiro" &>/dev/null; then
