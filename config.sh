@@ -65,12 +65,11 @@ function install_essential() {
     $PM_INSTALL $ESSENTIAL_PKG
 
     # AUR
-    if [ $LINUX_DIST == arch ]; then
-        git clone https://aur.archlinux.org/yay-bin.git /tmp/yay
-        pushd /tmp/yay
-            makepkg -si
-        popd
-    fi
+    git clone https://aur.archlinux.org/yay-bin.git /tmp/yay
+    chown -R nobody:nobody /tmp/yay
+    pushd /tmp/yay
+        runuser -u nobody -- makepkg -si
+    popd
 
     if [ $LINUX_DIST == debian ]; then
 
