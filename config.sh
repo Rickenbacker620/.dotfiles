@@ -1,8 +1,9 @@
 #!/bin/bash
 
-if [ "$EUID" -ne 0 ] && ! groups | grep -qE 'sudo|wheel'; then
-  echo "This script must be run as root or by a user who can execute sudo."
-  exit 1
+# Check if the script is run as root
+if [ "$EUID" -ne 0 ]; then
+    echo "This script must be run as root. Please use sudo."
+    exit 1
 fi
 
 if [ -e /etc/os-release ]; then
@@ -16,8 +17,7 @@ else
 fi
 
 if [ $LINUX_DIST == arch ]; then
-    sudo pacman -Syy
-    PM_INSTALL_NOSUDO="pacman -S --noconfirm --needed"
+    pacman -Syy
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
     AUR_INSTALL="yay --noconfirm"
 
@@ -28,8 +28,7 @@ if [ $LINUX_DIST == arch ]; then
     DESKTOP_PKG="hyprland waybar wl-clipboard wofi kitty pipewire wireplumber brightnessctl fcitx5-im bluez bluez-utils hyprpaper power-profiles-daemon mpv libvirt virt-manager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
 
 elif [ $LINUX_DIST == debian ]; then
-    sudo apt-get update
-    PM_INSTALL_NOSUDO="apt-get install -y"
+    apt-get update
     PM_INSTALL="sudo apt-get install -y"
 
     ESSENTIAL_PKG="stow git btop highlight curl wget vim fish tmux man zoxide build-essential openssh-client openssh-server docker ca-certificates gnupg"
@@ -53,14 +52,14 @@ function install_essential() {
 
     if [ $LINUX_DIST == arch ]; then
         # Customize pacman and makepkg configs
-        sudo sed -i 's/#Color/Color/g' /etc/pacman.conf
-        sudo sed -i 's/#VerbosePkgLists/VerbosePkgLists/g' /etc/pacman.conf
+        sed -i 's/#Color/Color/g' /etc/pacman.conf
+        sed -i 's/#VerbosePkgLists/VerbosePkgLists/g' /etc/pacman.conf
 
         # Comment the NoProgressBar option
-        sudo sed -i 's/NoProgressBar/#NoProgressBar/g' /etc/pacman.conf
+        sed -i 's/NoProgressBar/#NoProgressBar/g' /etc/pacman.conf
 
         # Dont download debug packages
-        sudo sed -i '/^OPTIONS=/ s/ debug/ !debug/' /etc/makepkg.conf
+        sed -i '/^OPTIONS=/ s/ debug/ !debug/' /etc/makepkg.conf
     fi
 
     $PM_INSTALL $ESSENTIAL_PKG
@@ -87,16 +86,16 @@ function install_essential() {
 
         # Docker
         info "Installing Docker"
-        sudo install -m 0755 -d /etc/apt/keyrings
-        sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
-        sudo chmod a+r /etc/apt/keyrings/docker.asc
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+        chmod a+r /etc/apt/keyrings/docker.asc
 
         echo \
         "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
         $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-        sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        sudo apt-get update
-        sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        tee /etc/apt/sources.list.d/docker.list > /dev/null
+        apt-get update
+        apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     fi
 }
 
@@ -116,12 +115,12 @@ function install_dev() {
         # MongoDB
         info "Installing MongoDB"
         curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
-        sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
+        gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg \
         --dearmor
 
-        echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
-        sudo apt-get update
-        sudo apt-get install -y mongodb-org
+        echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.0 main" | tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+        apt-get update
+        apt-get install -y mongodb-org
     fi
 
     if [ $LINUX_DIST == arch ]; then
@@ -166,45 +165,6 @@ function setup_ssh() {
     echo $REPLY >> ~/.ssh/authorized_keys
 }
 
-function create_user() {
-    info "Creating user shiro"
-
-    # Install sudo
-    info "Installing sudo"
-    $PM_INSTALL_NOSUDO sudo
-
-    # Check if user already exists
-    if id "shiro" &>/dev/null; then
-        echo "User shiro already exists"
-        return 1
-    fi
-
-    # Create user
-    if ! useradd -m shiro; then
-        echo "Failed to create user shiro"
-        return 1
-    fi
-
-    # Modify user group
-    if [ "$LINUX_DIST" == "arch" ]; then
-        usermod -aG wheel shiro
-        echo "%wheel ALL=(ALL:ALL) ALL" > /etc/sudoers.d/01-wheel
-        chmod 440 /etc/sudoers.d/01-wheel
-    elif [ "$LINUX_DIST" == "debian" ]; then
-        usermod -aG sudo shiro
-        echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/01-sudo
-        chmod 440 /etc/sudoers.d/01-sudo
-    fi
-
-    # Set password
-    echo "Please set password for user shiro"
-    until passwd shiro; do
-        echo "Password setting failed, please try again"
-    done
-
-    echo "User shiro created successfully and added to admin group"
-}
-
 function setup_config() {
 
     rm -rf ~/.config
@@ -219,7 +179,7 @@ function setup_config() {
 PS3="Please select a configuration (enter the number): "
 
 while true; do
-    select opt in "Install essential pkgs" "Install dev pkgs" "Install desktop pkgs" "Create user" "Config" "Exit"; do
+    select opt in "Install essential pkgs" "Install dev pkgs" "Install desktop pkgs" "Config" "Exit"; do
         case "$REPLY" in
         1)
             install_essential
@@ -234,14 +194,10 @@ while true; do
             break
             ;;
         4)
-            create_user
-            break
-            ;;
-        5)
             setup_config
             break
             ;;
-        6)
+        5)
             echo "Exiting..."
             exit 0
             ;;
