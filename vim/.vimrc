@@ -71,7 +71,6 @@ set shiftwidth=2         " Number of spaces for autoindent
 set tabstop=4           " Number of spaces for tab
 set softtabstop=4       " Number of spaces for tab while editing
 set list                " Show invisible characters
-set listchars=tab:→\    " Show tabs as arrows
 set wrap                " Wrap long lines
 set tw=0                " No automatic text wrapping
 set noshowmode          " Don't show mode (lightline shows it)
