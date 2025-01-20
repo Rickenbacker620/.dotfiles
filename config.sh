@@ -68,7 +68,8 @@ function install_essential() {
     git clone https://aur.archlinux.org/yay-bin.git /tmp/yay
     chown -R nobody:nobody /tmp/yay
     pushd /tmp/yay
-        runuser -u nobody -- makepkg -si
+        runuser -u nobody -- makepkg -sf
+        pacman -U --noconfirm *.pkg.tar.zst
     popd
 
     if [ $LINUX_DIST == debian ]; then
