@@ -11,7 +11,6 @@ end
 bind -M insert \cf forward-char
 
 if status --is-interactive
-    alias e="$EDITOR"
     abbr --add dotdot --regex '^\.\.+$' --function multicd
 
     if type -q zoxide
