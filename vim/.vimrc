@@ -1,25 +1,18 @@
-" Install vim-plug
-let data_dir = '~/.vim'
-if empty(glob(data_dir . '/autoload/plug.vim'))
-  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-
-" Plugins
-call plug#begin()
-Plug 'itchyny/lightline.vim'
-Plug 'dracula/vim', { 'as': 'dracula' }
-call plug#end()
-
 " Plugin settings
-let g:dracula_colorterm = 0
-colorscheme dracula
 let g:lightline = {
       \ 'colorscheme': 'dracula',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste'  ], [ 'filename'  ], [ 'bufferline'  ]  ],
       \ },
       \ }
+
+let g:dracula_colorterm = 0
+
+if v:version < 802
+    packadd! dracula
+endif
+syntax enable
+colorscheme dracula
 
 "============ Key Mappings ============
 " Navigation
