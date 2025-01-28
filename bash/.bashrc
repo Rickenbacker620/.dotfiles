@@ -7,11 +7,7 @@
 
 PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
-if command -v nvim &>/dev/null; then
-    export EDITOR=nvim
-else
-    export EDITOR=vim
-fi
+export EDITOR=vim
 
 export LESSHISTFILE=-
 
