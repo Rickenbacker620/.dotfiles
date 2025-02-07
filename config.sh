@@ -1,8 +1,38 @@
 #!/bin/bash
 
-# Check if the script is run as root
-if [ "$EUID" -ne 0 ] && [ "$SUDO_USER" = "" ]; then 
-    echo "This script must be run with sudo privileges"
+function center_text() {
+    local text="$1 ..."
+    local term_width=$(tput cols)
+    local text_length=${#text}
+    local padding=$(( (term_width - text_length) / 2 ))
+    printf "%*s%s%*s" $padding "" "$text" $padding ""
+}
+
+function info() {
+    printf "\033[44m%s\033[0m\n" "$(center_text "$1")"
+}
+
+function error() {
+    printf "\033[41m%s\033[0m\n" "$(center_text "$1")"
+}
+
+function check_root() {
+    if [ $EUID -ne 0 ]; then
+        error "This operation must be run as root"
+        exit 1
+    fi
+}
+
+function check_non_root() {
+    if [ $EUID -eq 0 ]; then
+        error "This operation must not be run as root"
+        exit 1
+    fi
+}
+
+# Check if sudo is installed
+if ! command -v sudo &>/dev/null; then
+    error "Please install sudo first."
     exit 1
 fi
 
@@ -13,11 +43,16 @@ if [ -e /etc/os-release ]; then
         LINUX_DIST=arch
     fi
 else
-    echo "/etc/os-release file not found."
+    error "/etc/os-release file not found."
 fi
 
+# Init or update all git submodules
+info "Initializing and updating git submodules"
+git submodule update --init --recursive --depth 1
+
+
 if [ $LINUX_DIST == arch ]; then
-    pacman -Syy
+    sudo pacman -Syy
     PM_INSTALL="sudo pacman -S --noconfirm --needed"
     AUR_INSTALL="yay --noconfirm"
 
@@ -28,7 +63,7 @@ if [ $LINUX_DIST == arch ]; then
     DESKTOP_PKG="hyprland waybar wl-clipboard wofi kitty pipewire wireplumber brightnessctl fcitx5-im bluez bluez-utils hyprpaper power-profiles-daemon mpv libvirt virt-manager noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd ttf-font-awesome powerline powerline-fonts"
 
 elif [ $LINUX_DIST == debian ]; then
-    apt-get update
+    sudo apt-get update
     PM_INSTALL="sudo apt-get install -y"
 
     ESSENTIAL_PKG="stow git btop highlight curl wget vim fish tmux man zoxide build-essential openssh-client openssh-server docker ca-certificates gnupg"
@@ -38,16 +73,13 @@ elif [ $LINUX_DIST == debian ]; then
     DESKTOP_PKG="mpv libvirt virt-install virt-viewer noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra ttf-jetbrains-mono-nerd"
 
 else
-    echo "Unsupported package manager"
+    error "Unsupported package manager"
     exit 1
 fi
 
 
-function info() {
-    echo -e "\033[96m$1 ...\033[0m"
-}
-
 function install_essential() {
+    check_non_root
     info "Installing Essential Tools"
 
     if [ $LINUX_DIST == arch ]; then
@@ -100,6 +132,7 @@ function install_essential() {
 }
 
 function install_dev() {
+    check_non_root
     info "Installing Dev Tools"
 
     $PM_INSTALL $DEV_PKG
@@ -119,8 +152,8 @@ function install_dev() {
         --dearmor
 
         echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.0 main" | tee /etc/apt/sources.list.d/mongodb-org-8.0.list
-        apt-get update
-        apt-get install -y mongodb-org
+        sudo apt-get update
+        sudo apt-get install -y mongodb-org
     fi
 
     if [ $LINUX_DIST == arch ]; then
@@ -129,6 +162,7 @@ function install_dev() {
 }
 
 function install_desktop() {
+    check_non_root
     info "Installing Desktop Environment"
 
     $PM_INSTALL $DESKTOP_PKG
@@ -176,10 +210,46 @@ function setup_config() {
     setup_ssh
 }
 
+function create_user() {
+    check_root
+    info "Creating user shiro"
+
+    # Check if user already exists
+    if id "shiro" &>/dev/null; then
+        info "User shiro already exists"
+        return 1
+    fi
+
+    # Create user
+    if ! useradd -m shiro; then
+        error "Failed to create user shiro"
+        return 1
+    fi
+
+    # Modify user group
+    if [ "$LINUX_DIST" == "arch" ]; then
+        usermod -aG wheel shiro
+        echo "%wheel ALL=(ALL:ALL) ALL" > /etc/sudoers.d/01-wheel
+        chmod 440 /etc/sudoers.d/01-wheel
+    elif [ "$LINUX_DIST" == "debian" ]; then
+        usermod -aG sudo shiro
+        echo "%sudo ALL=(ALL:ALL) ALL" > /etc/sudoers.d/01-sudo
+        chmod 440 /etc/sudoers.d/01-sudo
+    fi
+
+    # Set password
+    info "Please set password for user shiro"
+    until passwd shiro; do
+        error "Password setting failed, please try again"
+    done
+
+    info "User shiro created successfully and added to admin group"
+}
+
 PS3="Please select a configuration (enter the number): "
 
 while true; do
-    select opt in "Install essential pkgs" "Install dev pkgs" "Install desktop pkgs" "Config" "Exit"; do
+    select opt in "Install essential pkgs" "Install dev pkgs" "Install desktop pkgs" "Create user" "Config" "Exit"; do
         case "$REPLY" in
         1)
             install_essential
@@ -194,15 +264,19 @@ while true; do
             break
             ;;
         4)
-            setup_config
+            create_user
             break
             ;;
         5)
+            setup_config
+            break
+            ;;
+        6|q|Q)
             echo "Exiting..."
             exit 0
             ;;
         *)
-            echo "Invalid option. Please select a valid number."
+            echo "Invalid option. Please select a valid number or 'q' to quit."
             ;;
         esac
     done
