@@ -79,3 +79,4 @@ set ignorecase          " Case insensitive search
 set wildignorecase      " Case insensitive command-line completion
 set smartcase           " Case sensitive if search pattern has uppercase
 set clipboard+=unnamedplus  " Use system clipboard
+set listchars=tab:>-,trail:~,extends:>,precedes:< " Show special characters
