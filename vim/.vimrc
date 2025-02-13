@@ -80,3 +80,14 @@ set wildignorecase      " Case insensitive command-line completion
 set smartcase           " Case sensitive if search pattern has uppercase
 set clipboard+=unnamedplus  " Use system clipboard
 set listchars=tab:>-,trail:~,extends:>,precedes:< " Show special characters
+
+" Change cursor shape based on mode
+if exists('$TMUX')
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\e[5 q\<Esc>\\"
+  let &t_SR = "\<Esc>Ptmux;\<Esc>\e[3 q\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\e[2 q\<Esc>\\"
+else
+  let &t_SI = "\e[5 q"  " Insert mode: vertical bar
+  let &t_SR = "\e[3 q"  " Replace mode: underscore
+  let &t_EI = "\e[2 q"  " Normal mode: block
+endif
