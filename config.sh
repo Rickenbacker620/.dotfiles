@@ -84,14 +84,14 @@ function install_essential() {
 
     if [ $LINUX_DIST == arch ]; then
         # Customize pacman and makepkg configs
-        sed -i 's/#Color/Color/g' /etc/pacman.conf
-        sed -i 's/#VerbosePkgLists/VerbosePkgLists/g' /etc/pacman.conf
+        sudo sed -i 's/#Color/Color/g' /etc/pacman.conf
+        sudo sed -i 's/#VerbosePkgLists/VerbosePkgLists/g' /etc/pacman.conf
 
         # Comment the NoProgressBar option
-        sed -i 's/NoProgressBar/#NoProgressBar/g' /etc/pacman.conf
+        sudo sed -i 's/NoProgressBar/#NoProgressBar/g' /etc/pacman.conf
 
         # Dont download debug packages
-        sed -i '/^OPTIONS=/ s/ debug/ !debug/' /etc/makepkg.conf
+        sudo sed -i '/^OPTIONS=/ s/ debug/ !debug/' /etc/makepkg.conf
     fi
 
     $PM_INSTALL $ESSENTIAL_PKG
