@@ -1,7 +1,9 @@
 fish_config theme choose "Dracula"
 
 if test (tty) = "/dev/tty1"
-    exec Hyprland
+    if type -q Hyprland
+        exec Hyprland
+    end
 end
 
 function fish_command_not_found
